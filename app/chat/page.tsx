@@ -4,17 +4,17 @@ import { useChat } from "@ai-sdk/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send, Bot, User, Sparkles } from "lucide-react";
-import { useEffect, useRef, Suspense } from "react";
+import { useEffect, useRef, Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 function ChatContent() {
-    const { messages, input, handleInputChange, handleSubmit, setInput, isLoading } =
-        useChat({
-            initialMessages: [],
-        });
+    const { messages, sendMessage, status } = useChat();
+    const [input, setInput] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const searchParams = useSearchParams();
+
+    const isLoading = status === "submitted" || status === "streaming";
 
     // Auto-fill input from URL query if present (from Home search)
     useEffect(() => {
@@ -22,7 +22,7 @@ function ChatContent() {
         if (q) {
             setInput(q);
         }
-    }, [searchParams, setInput]);
+    }, [searchParams]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -31,6 +31,29 @@ function ChatContent() {
     useEffect(() => {
         scrollToBottom();
     }, [messages, isLoading]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInput(e.target.value);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!input.trim()) return;
+        await sendMessage({ text: input });
+        setInput("");
+    };
+
+    const renderMessageContent = (m: any) => {
+        // Fallback if content exists (backward compat) or use parts
+        if (typeof m.content === "string") return m.content;
+        if (m.parts) {
+            return m.parts
+                .filter((p: any) => p.type === "text")
+                .map((p: any) => p.text)
+                .join("");
+        }
+        return "";
+    };
 
     return (
         <div className="flex flex-col h-[calc(100vh-64px)] max-w-4xl mx-auto md:p-6 p-4">
@@ -106,7 +129,7 @@ function ChatContent() {
                                 )}
                             >
                                 <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                                    {m.content}
+                                    {renderMessageContent(m)}
                                 </div>
                             </div>
                         </div>
