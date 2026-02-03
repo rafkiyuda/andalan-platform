@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String?  @unique
+  phone         String?  @unique
+  passwordHash  String
+  userType      String   @default("customer") // customer, mitra
+  
+  // Profile
+  avatar        String?
+  bio           String?
+  location      String?
+  
+  // Verification
+  phoneVerified Boolean  @default(false)
+  emailVerified Boolean  @default(false)
+  
+  // Mitra-specific fields
+  rating        Float?
+  totalJobs     Int      @default(0)
+  isOnline      Boolean  @default(false)
+  services      String[] // Array of service IDs they offer
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  orders        Order[]
+  sessions      Session[]
+  
+  @@index([userType])
+  @@index([isOnline])
+  @@index([phone])
+  @@index([email])
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  serviceType String
+  serviceName String
+  description String
+  status      String   @default("pending") // pending, confirmed, in-progress, completed, cancelled
+  price       Float
+  location    String?
+  scheduledAt DateTime?
+  
+  // Emergency & AI features
+  priority    Boolean  @default(false) // Emergency flag for ANDALAN Prioritas
+  aiDiagnosis Json?    // Store AI diagnosis result
+  intentData  Json?    // Store AI intent parsing from ANDALAN Instant
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([priority])
+}
+
+model Service {
+  id          String  @id @default(cuid())
+  name        String
+  category    String
+  description String
+  basePrice   Float
+  icon        String?
+  createdAt   DateTime @default(now())
+
+  @@index([category])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  @@index([userId])
+  @@index([token])
+}

@@ -1,28 +1,30 @@
 "use client";
 
-import { useChat } from "@ai-sdk/react";
+import { useChat } from "ai/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send, Bot, User, Sparkles } from "lucide-react";
-import { useEffect, useRef, Suspense, useState } from "react";
+import { useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 function ChatContent() {
-    const { messages, sendMessage, status } = useChat();
-    const [input, setInput] = useState("");
+    const { messages, input, setInput, append, isLoading, error } = useChat({
+        onError: (error) => {
+            console.error('Chat error:', error);
+            alert('Gagal mengirim pesan: ' + error.message);
+        },
+    });
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const searchParams = useSearchParams();
-
-    const isLoading = status === "submitted" || status === "streaming";
 
     // Auto-fill input from URL query if present (from Home search)
     useEffect(() => {
         const q = searchParams.get("q");
-        if (q) {
+        if (q && input === "" && messages.length === 0) {
             setInput(q);
         }
-    }, [searchParams]);
+    }, [searchParams, input, messages.length, setInput]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -32,27 +34,20 @@ function ChatContent() {
         scrollToBottom();
     }, [messages, isLoading]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInput(e.target.value);
+    const renderMessageContent = (m: any) => {
+        return m.content || "";
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!input.trim()) return;
-        await sendMessage({ text: input });
-        setInput("");
-    };
+        if (!input.trim() || isLoading) return;
 
-    const renderMessageContent = (m: any) => {
-        // Fallback if content exists (backward compat) or use parts
-        if (typeof m.content === "string") return m.content;
-        if (m.parts) {
-            return m.parts
-                .filter((p: any) => p.type === "text")
-                .map((p: any) => p.text)
-                .join("");
-        }
-        return "";
+        console.log('Sending message:', input);
+        await append({
+            role: 'user',
+            content: input,
+        });
+        setInput('');
     };
 
     return (
@@ -160,8 +155,9 @@ function ChatContent() {
                     <Input
                         className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-4 py-6 text-base shadow-none"
                         value={input}
-                        onChange={handleInputChange}
+                        onChange={(e) => setInput(e.target.value)}
                         placeholder="Ketik pesan Anda disini..."
+                        disabled={isLoading}
                     />
                     <Button
                         type="submit"

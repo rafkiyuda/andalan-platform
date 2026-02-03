@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-
-
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
@@ -43,13 +41,14 @@
   --font-sans: var(--font-inter);
   --font-heading: var(--font-poppins);
 
-  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
-  --shadow-glow: 0 0 20px -5px var(--primary);
+  --shadow-soft: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+  --shadow-elegant: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 0 30px -8px var(--primary);
 }
 
 :root {
-  /* Documind-inspired Modern Light Mode */
-  --background: 210 40% 98%;
+  /* BebyNest-inspired Elegant Light Mode */
+  --background: 0 0% 100%;
   --foreground: 222 47% 11%;
 
   --card: 0 0% 100%;
@@ -58,63 +57,61 @@
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
 
-  /* Premium Indigo/Purple Brand Color */
-  --primary: 239 84% 67%;
-  /* Softened slightly for better contrast */
+  /* Softer, more approachable primary color */
+  --primary: 217 91% 60%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 210 40% 96%;
+  --secondary: 214 32% 97%;
   --secondary-foreground: 222 47% 11%;
 
   --muted: 210 40% 96%;
   --muted-foreground: 215 16% 47%;
 
-  --accent: 210 40% 96%;
-  --accent-foreground: 222 47% 11%;
+  --accent: 217 91% 95%;
+  --accent-foreground: 217 91% 60%;
 
   --destructive: 0 84% 60%;
-  --destructive-foreground: 210 40% 98%;
+  --destructive-foreground: 0 0% 100%;
 
-  --border: 220 13% 91%;
-  --input: 220 13% 91%;
-  --ring: 239 84% 67%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 217 91% 60%;
 
-  --radius: 1rem;
-  /* Modern rounded feel */
+  --radius: 1.25rem;
 
   --font-inter: "Inter", sans-serif;
   --font-poppins: "Poppins", sans-serif;
 }
 
 .dark {
-  /* Deep, Rich Dark Mode */
-  --background: 224 71% 4%;
+  /* Elegant Dark Mode */
+  --background: 222 47% 11%;
   --foreground: 210 40% 98%;
 
-  --card: 222 47% 11%;
+  --card: 217 32% 17%;
   --card-foreground: 210 40% 98%;
 
-  --popover: 222 47% 11%;
+  --popover: 217 32% 17%;
   --popover-foreground: 210 40% 98%;
 
-  --primary: 239 84% 67%;
-  --primary-foreground: 210 40% 98%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: 217 32% 17%;
+  --secondary: 217 32% 20%;
   --secondary-foreground: 210 40% 98%;
 
   --muted: 217 32% 17%;
   --muted-foreground: 215 20% 65%;
 
-  --accent: 217 32% 17%;
-  --accent-foreground: 210 40% 98%;
+  --accent: 217 32% 20%;
+  --accent-foreground: 217 91% 60%;
 
-  --destructive: 0 62% 30%;
+  --destructive: 0 62% 50%;
   --destructive-foreground: 210 40% 98%;
 
-  --border: 217 32% 17%;
-  --input: 217 32% 17%;
-  --ring: 239 84% 67%;
+  --border: 217 32% 24%;
+  --input: 217 32% 24%;
+  --ring: 217 91% 60%;
 }
 
 @layer base {
@@ -136,38 +133,93 @@
     font-family: var(--font-heading);
     @apply tracking-tight;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer utilities {
+
+  /* Softer gradient inspired by BebyNest */
   .bg-gradient-primary {
-    @apply bg-gradient-to-br from-[#5D5FEF] via-[#7B61FF] to-[#A259FF];
+    @apply bg-gradient-to-br from-[#3b82f6] via-[#6366f1] to-[#8b5cf6];
+  }
+
+  .bg-gradient-soft {
+    @apply bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50;
+  }
+
+  .dark .bg-gradient-soft {
+    @apply bg-gradient-to-br from-blue-950/20 via-indigo-950/20 to-purple-950/20;
   }
 
   .text-gradient-primary {
-    @apply bg-clip-text text-transparent bg-gradient-to-br from-[#5D5FEF] via-[#7B61FF] to-[#A259FF];
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-[#3b82f6] via-[#6366f1] to-[#8b5cf6];
   }
 
   .shadow-soft {
     box-shadow: var(--shadow-soft);
   }
+
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
 }
 
-/* Premium Glassmorphism */
+/* Refined Glassmorphism */
 .glass {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .dark .glass {
-  background: rgba(17, 24, 39, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Card Hover Effects */
+/* Elegant Card Hover Effects */
 .card-hover {
-  @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  @apply transition-all duration-300 ease-out hover:shadow-elegant hover:-translate-y-0.5;
+}
+
+/* Smooth Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.6s ease-out;
 }
