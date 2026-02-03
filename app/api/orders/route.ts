@@ -72,6 +72,9 @@ export async function POST(request: Request) {
                 data: {
                     id: userId,
                     name: 'Guest User',
+                    email: `${userId}@guest.andalan.com`,
+                    passwordHash: 'guest-temp-hash',
+                    userType: 'customer',
                 },
             });
         }
