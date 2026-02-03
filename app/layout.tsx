@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <body
-        className={`${poppins.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${poppins.variable} ${inter.variable} font-sans antialiased`}
       >
         <ThemeProvider
           attribute="class"
@@ -37,10 +37,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <main className="min-h-screen pb-20 md:pb-0">
-            {children}
-          </main>
+          <div className="bg-background text-foreground min-h-screen">
+            <Navbar />
+            <main className="min-h-screen pb-20 md:pb-0">
+              {children}
+            </main>
+          </div>
         </ThemeProvider>
       </body>
     </html>
