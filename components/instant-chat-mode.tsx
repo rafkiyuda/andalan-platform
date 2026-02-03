@@ -62,43 +62,44 @@ export function InstantChatMode() {
     };
 
     return (
-        <div className="space-y-4">
-            {/* Welcome Message */}
-            {messages.length === 0 && (
-                <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-                    <CardContent className="p-6">
-                        <div className="flex items-start gap-4">
-                            <div className="p-3 rounded-full bg-primary/10">
-                                <Sparkles className="h-6 w-6 text-primary" />
-                            </div>
-                            <div className="flex-1">
-                                <h3 className="font-bold text-lg mb-2">Chat dengan Andalan AI</h3>
-                                <p className="text-sm text-muted-foreground mb-3">
-                                    Ceritakan masalah atau kebutuhan jasa Anda, dan saya akan membantu menemukan solusi terbaik.
-                                </p>
-                                <div className="text-xs text-muted-foreground space-y-1">
-                                    <p>💡 <strong>Tips:</strong> Jelaskan masalahnya dengan detail</p>
-                                    <p>📷 Punya foto? Switch ke mode "Foto" untuk diagnosis visual</p>
+        <div className="flex flex-col h-[calc(100vh-280px)] md:h-auto max-w-4xl mx-auto">
+            {/* Messages Area - Scrollable */}
+            <div className="flex-1 overflow-y-auto pb-28 md:pb-4 space-y-4">
+                {/* Welcome Message */}
+                {messages.length === 0 && (
+                    <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                        <CardContent className="p-4 md:p-6">
+                            <div className="flex items-start gap-3 md:gap-4">
+                                <div className="p-2 md:p-3 rounded-full bg-primary/10 shrink-0">
+                                    <Sparkles className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-bold text-base md:text-lg mb-2">Chat dengan Andalan AI</h3>
+                                    <p className="text-xs md:text-sm text-muted-foreground mb-3">
+                                        Ceritakan masalah atau kebutuhan jasa Anda, dan saya akan membantu menemukan solusi terbaik.
+                                    </p>
+                                    <div className="text-xs text-muted-foreground space-y-1">
+                                        <p>💡 <strong>Tips:</strong> Jelaskan masalahnya dengan detail</p>
+                                        <p>📷 Punya foto? Switch ke mode "Foto" untuk diagnosis visual</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
+                        </CardContent>
+                    </Card>
+                )}
 
-            {/* Chat Messages */}
-            {messages.length > 0 && (
-                <Card>
-                    <CardContent className="p-4 space-y-4 max-h-[500px] overflow-y-auto">
+                {/* Chat Messages */}
+                {messages.length > 0 && (
+                    <div className="space-y-4">
                         {messages.map((message, index) => (
                             <div
                                 key={index}
                                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                             >
                                 <div
-                                    className={`max-w-[80%] rounded-2xl px-4 py-3 ${message.role === 'user'
-                                            ? 'bg-primary text-primary-foreground'
-                                            : 'bg-secondary text-secondary-foreground'
+                                    className={`max-w-[85%] rounded-2xl px-4 py-3 ${message.role === 'user'
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'bg-secondary text-secondary-foreground'
                                         }`}
                                 >
                                     <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -113,40 +114,43 @@ export function InstantChatMode() {
                                 </div>
                             </div>
                         )}
+                    </div>
+                )}
+            </div>
+
+            {/* Input Area - Fixed at bottom on mobile */}
+            <div className="fixed bottom-16 md:bottom-auto md:static left-0 right-0 px-4 md:px-0 pb-2 md:pb-0">
+                <Card className="shadow-lg md:shadow-none">
+                    <CardContent className="p-3 md:p-4">
+                        <div className="flex gap-2 md:gap-3">
+                            <Textarea
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyDown={handleKeyPress}
+                                placeholder="Ketik pertanyaan atau masalah Anda di sini..."
+                                className="min-h-[50px] md:min-h-[60px] resize-none rounded-xl text-sm md:text-base"
+                                disabled={loading}
+                                rows={2}
+                            />
+                            <Button
+                                onClick={handleSend}
+                                disabled={!input.trim() || loading}
+                                className="rounded-xl bg-gradient-primary text-white self-end h-[50px] md:h-auto"
+                                size="icon"
+                            >
+                                {loading ? (
+                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                ) : (
+                                    <Send className="h-5 w-5" />
+                                )}
+                            </Button>
+                        </div>
+                        <p className="text-[10px] md:text-xs text-muted-foreground mt-2">
+                            Tekan Enter untuk kirim, Shift+Enter untuk baris baru
+                        </p>
                     </CardContent>
                 </Card>
-            )}
-
-            {/* Input Area */}
-            <Card>
-                <CardContent className="p-4">
-                    <div className="flex gap-3">
-                        <Textarea
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={handleKeyPress}
-                            placeholder="Ketik pertanyaan atau masalah Anda di sini..."
-                            className="min-h-[60px] resize-none rounded-xl"
-                            disabled={loading}
-                        />
-                        <Button
-                            onClick={handleSend}
-                            disabled={!input.trim() || loading}
-                            className="rounded-xl bg-gradient-primary text-white self-end"
-                            size="icon"
-                        >
-                            {loading ? (
-                                <Loader2 className="h-5 w-5 animate-spin" />
-                            ) : (
-                                <Send className="h-5 w-5" />
-                            )}
-                        </Button>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                        Tekan Enter untuk kirim, Shift+Enter untuk baris baru
-                    </p>
-                </CardContent>
-            </Card>
+            </div>
         </div>
     );
 }
