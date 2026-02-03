@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ProviderCard } from '@/components/provider-card';
+import { CameraCapture } from '@/components/camera-capture';
 import {
     Camera,
     Upload,
@@ -15,6 +16,7 @@ import {
     Edit,
     Search,
     AlertCircle,
+    Image as ImageIcon,
 } from 'lucide-react';
 
 interface DiagnosisResult {
@@ -37,7 +39,7 @@ interface Provider {
 
 export default function InstantPage() {
     const router = useRouter();
-    const [step, setStep] = useState<'upload' | 'diagnosis' | 'providers'>('upload');
+    const [step, setStep] = useState<'upload' | 'camera' | 'diagnosis' | 'providers'>('upload');
     const [image, setImage] = useState<string | null>(null);
     const [textInput, setTextInput] = useState('');
     const [loading, setLoading] = useState(false);
@@ -54,6 +56,11 @@ export default function InstantPage() {
             };
             reader.readAsDataURL(file);
         }
+    };
+
+    const handleCameraCapture = (imageData: string) => {
+        setImage(imageData);
+        setStep('upload');
     };
 
     const handleAnalyze = async () => {
@@ -132,35 +139,64 @@ export default function InstantPage() {
             </div>
 
             <div className="container mx-auto px-4 md:px-6 py-8">
+                {/* Step 1: Camera Mode */}
+                {step === 'camera' && (
+                    <div className="max-w-2xl mx-auto">
+                        <CameraCapture
+                            onCapture={handleCameraCapture}
+                            onCancel={() => setStep('upload')}
+                        />
+                    </div>
+                )}
+
                 {/* Step 1: Upload Photo or Text */}
                 {step === 'upload' && (
                     <div className="max-w-2xl mx-auto space-y-6">
                         <Card>
                             <CardContent className="p-6">
                                 <h2 className="text-lg font-bold font-heading mb-4">
-                                    Upload Foto atau Deskripsikan Masalah
+                                    Ambil Foto atau Upload Gambar
                                 </h2>
 
-                                {/* Image Upload */}
+                                {/* Image Preview or Dual Options */}
                                 <div className="space-y-4">
-                                    <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors">
-                                        {image ? (
-                                            <div className="space-y-4">
-                                                <img
-                                                    src={image}
-                                                    alt="Preview"
-                                                    className="max-h-64 mx-auto rounded-lg"
-                                                />
-                                                <Button
-                                                    variant="outline"
-                                                    onClick={() => setImage(null)}
-                                                    className="rounded-xl"
-                                                >
-                                                    Ganti Foto
-                                                </Button>
-                                            </div>
-                                        ) : (
-                                            <label className="cursor-pointer">
+                                    {image ? (
+                                        <div className="space-y-4">
+                                            <img
+                                                src={image}
+                                                alt="Preview"
+                                                className="max-h-64 mx-auto rounded-lg"
+                                            />
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => setImage(null)}
+                                                className="w-full rounded-xl"
+                                            >
+                                                Ganti Foto
+                                            </Button>
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {/* Camera Button */}
+                                            <button
+                                                onClick={() => setStep('camera')}
+                                                className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer"
+                                            >
+                                                <div className="space-y-3">
+                                                    <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                                                        <Camera className="h-8 w-8 text-primary" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium">Ambil Foto</p>
+                                                        <p className="text-sm text-muted-foreground">
+                                                            Gunakan kamera
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </button>
+
+                                            {/* Upload Button */}
+                                            <label className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer">
                                                 <input
                                                     type="file"
                                                     accept="image/*"
@@ -169,18 +205,18 @@ export default function InstantPage() {
                                                 />
                                                 <div className="space-y-3">
                                                     <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                                                        <Camera className="h-8 w-8 text-primary" />
+                                                        <ImageIcon className="h-8 w-8 text-primary" />
                                                     </div>
                                                     <div>
-                                                        <p className="font-medium">Upload Foto Masalah</p>
+                                                        <p className="font-medium">Upload Foto</p>
                                                         <p className="text-sm text-muted-foreground">
-                                                            Klik untuk pilih foto dari galeri
+                                                            Pilih dari galeri
                                                         </p>
                                                     </div>
                                                 </div>
                                             </label>
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
 
                                     {/* Text Input */}
                                     <div className="space-y-2">
@@ -298,10 +334,10 @@ export default function InstantPage() {
                                             </label>
                                             <div
                                                 className={`mt-1 px-3 py-2 rounded-xl font-medium capitalize ${diagnosis.urgency === 'high'
-                                                        ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                                                        : diagnosis.urgency === 'medium'
-                                                            ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-                                                            : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                                    ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                                    : diagnosis.urgency === 'medium'
+                                                        ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                                        : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                                     }`}
                                             >
                                                 {diagnosis.urgency}
