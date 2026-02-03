@@ -15,11 +15,12 @@ export async function POST(req: Request) {
     // RAG: Search workers/mitra from database based on query
     const lowerQuery = query.toLowerCase();
     let searchContext = "";
+    let workers: any[] = []; // Declare workers array here
 
     if (lowerQuery.length > 2) {
         try {
             // Search workers based on skills, specialization, or description
-            const workers = await prisma.worker.findMany({
+            workers = await prisma.worker.findMany({
                 where: {
                     AND: [
                         { isAvailable: true },
@@ -132,6 +133,9 @@ export async function POST(req: Request) {
         }
     }
 
+    // Prepare worker IDs for frontend card rendering
+    const workerIds = workers.map(w => w.id);
+
     const result = streamText({
         model: google('gemini-2.5-flash'),
         messages,
@@ -141,7 +145,7 @@ TUGAS UTAMA:
 1. Memahami masalah/kebutuhan user dari pesan mereka
 2. Mencocokkan dengan mitra (tukang/profesional) yang ADA DI DATABASE
 3. Merekomendasikan mitra terbaik berdasarkan data REAL dari database
-4. Berikan informasi lengkap: nama, rating, harga, lokasi, kontak
+4. Berikan informasi lengkap: nama, rating, harga, lokasi
 
 ATURAN PENTING:
 - HANYA rekomendasikan mitra yang ADA di "DATA MITRA DARI DATABASE" di bawah
@@ -149,22 +153,30 @@ ATURAN PENTING:
 - Jika tidak ada mitra yang cocok, sampaikan dengan jujur dan sarankan mencari dengan kata kunci lain
 - Urutkan rekomendasi berdasarkan rating dan jumlah pekerjaan
 - Jelaskan mengapa mitra tersebut cocok untuk masalah user
+- Jangan cantumkan nomor telepon dalam rekomendasi
 
 FORMAT RESPONS:
-1. Pahami masalah user
+1. Pahami masalah user dengan singkat
 2. List mitra yang cocok dengan format:
-   - Nama & Spesialisasi
-   - Rating & Total Jobs
-   - Keahlian
+   - **Nama** (Spesialisasi)
+   - Rating & pengalaman
+   - Keahlian utama
    - Harga
    - Lokasi
-   - Alasan kenapa cocok
+   - Alasan singkat kenapa cocok
 3. Berikan saran tambahan jika perlu
 
 TONE: Profesional, membantu, ramah, dan jelas. Gunakan Bahasa Indonesia.
+PENTING: Card profil mitra akan ditampilkan otomatis di bawah pesan, jadi fokus pada penjelasan.
 
 ${searchContext}`,
     });
 
-    return result.toTextStreamResponse();
+    // Append worker data as JSON at the end
+    const response = result.toTextStreamResponse();
+
+    // Add worker metadata to response headers
+    response.headers.set('X-Workers', JSON.stringify(workerIds));
+
+    return response;
 }

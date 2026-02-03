@@ -8,17 +8,34 @@ import { Send, Bot, User, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { WorkerRecommendationCard } from "@/components/worker-recommendation-card";
 
 interface Message {
     id: string;
     role: 'user' | 'assistant';
     content: string;
+    workerIds?: string[];
+}
+
+interface Worker {
+    id: string;
+    name: string;
+    specialization: string;
+    rating: number;
+    totalJobs: number;
+    location: string;
+    skills: string[];
+    priceRange?: string;
+    pricePerHour?: number;
+    isVerified: boolean;
+    avatar?: string;
 }
 
 function ChatContent() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [workers, setWorkers] = useState<Record<string, Worker>>({});
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const searchParams = useSearchParams();
 
