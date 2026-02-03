@@ -72,24 +72,20 @@ function ChatContent() {
                 content: '',
             }]);
 
-            while (reader) {
+            if (!reader) throw new Error('No reader available');
+
+            while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
 
-                const chunk = decoder.decode(value);
-                const lines = chunk.split('\n');
+                const chunk = decoder.decode(value, { stream: true });
+                assistantMessage += chunk;
 
-                for (const line of lines) {
-                    if (line.startsWith('0:')) {
-                        const text = line.substring(2).replace(/^"|"$/g, '');
-                        assistantMessage += text;
-                        setMessages(prev => prev.map(msg =>
-                            msg.id === assistantId
-                                ? { ...msg, content: assistantMessage }
-                                : msg
-                        ));
-                    }
-                }
+                setMessages(prev => prev.map(msg =>
+                    msg.id === assistantId
+                        ? { ...msg, content: assistantMessage }
+                        : msg
+                ));
             }
         } catch (error) {
             console.error('Chat error:', error);
