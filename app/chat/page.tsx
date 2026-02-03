@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send, Bot, User, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface Message {
     id: string;
@@ -168,8 +170,26 @@ function ChatContent() {
                                         : "bg-card text-card-foreground border rounded-tl-none"
                                 )}
                             >
-                                <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                                    {m.content}
+                                <div className="text-sm leading-relaxed prose prose-sm dark:prose-invert max-w-none">
+                                    {m.role === "user" ? (
+                                        <div className="whitespace-pre-wrap">{m.content}</div>
+                                    ) : (
+                                        <ReactMarkdown
+                                            remarkPlugins={[remarkGfm]}
+                                            components={{
+                                                p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                                                ul: ({ node, ...props }) => <ul className="mb-2 ml-4 list-disc" {...props} />,
+                                                ol: ({ node, ...props }) => <ol className="mb-2 ml-4 list-decimal" {...props} />,
+                                                li: ({ node, ...props }) => <li className="mb-1" {...props} />,
+                                                strong: ({ node, ...props }) => <strong className="font-bold" {...props} />,
+                                                em: ({ node, ...props }) => <em className="italic" {...props} />,
+                                                code: ({ node, ...props }) => <code className="bg-muted px-1 py-0.5 rounded text-xs" {...props} />,
+                                                h3: ({ node, ...props }) => <h3 className="font-bold text-base mb-2" {...props} />,
+                                            }}
+                                        >
+                                            {m.content}
+                                        </ReactMarkdown>
+                                    )}
                                 </div>
                             </div>
                         </div>
