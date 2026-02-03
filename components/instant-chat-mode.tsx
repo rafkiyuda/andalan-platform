@@ -118,8 +118,8 @@ export function InstantChatMode() {
                 )}
             </div>
 
-            {/* Input Area - Sticky at bottom with no gap */}
-            <div className="sticky bottom-0 left-0 right-0 bg-background border-t md:border-t-0 md:bottom-auto md:static px-4 md:px-0 py-2 md:py-0">
+            {/* Input Area - Sticky above bottom nav */}
+            <div className="sticky bottom-16 md:bottom-auto left-0 right-0 bg-background border-t md:border-t-0 md:static px-4 md:px-0 py-2 md:py-0">
                 <Card className="md:shadow-lg border-0 md:border">
                     <CardContent className="p-2 md:p-4">
                         <div className="flex gap-2 md:gap-3">
