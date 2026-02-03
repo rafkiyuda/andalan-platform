@@ -56,27 +56,49 @@ export async function analyzeProblem(input: {
     text?: string;
     imageBase64?: string;
 }) {
+    // Use gemini-1.5-flash for both text and vision (replaces deprecated gemini-pro-vision)
     const model = genAI.getGenerativeModel({
-        model: input.imageBase64 ? 'gemini-pro-vision' : 'gemini-pro',
+        model: 'gemini-1.5-flash',
     });
 
     let prompt = `
-Analyze this problem and provide a diagnosis:
-${input.text || 'Analyze the image provided'}
+PENTING: Anda adalah asisten AI untuk platform ANDALAN yang menganalisis masalah peralatan rumah tangga atau jasa.
 
-Return a JSON object with:
-- problem: type of problem detected
-- urgency: "low", "medium", or "high"
-- recommended_service: what type of professional is needed
-- price_estimation: estimated cost range in IDR (e.g., "100k - 300k")
-- description: detailed explanation of the problem
+${input.text ? `Deskripsi masalah dari user: ${input.text}` : ''}
+${input.imageBase64 ? 'Analisis gambar yang diberikan untuk mendeteksi masalah.' : ''}
 
-Only return the JSON, no other text.
+Tugas Anda:
+1. Identifikasi masalah yang terdeteksi dari gambar/teks
+2. Tentukan tingkat urgensi (low/medium/high)
+3. Rekomendasikan jenis layanan yang dibutuhkan
+4. Estimasi biaya perbaikan dalam IDR
+5. Berikan penjelasan detail masalahnya
+
+Format output JSON (HANYA JSON, tidak ada teks lain):
+{
+  "problem": "nama masalah yang jelas dalam Bahasa Indonesia",
+  "urgency": "low/medium/high",
+  "recommended_service": "jenis_layanan_yang_dibutuhkan",
+  "price_estimation": "range harga dalam format 'Rp 100.000 - Rp 500.000'",
+  "description": "penjelasan detail masalah dan kemungkinan penyebab dalam Bahasa Indonesia"
+}
+
+Contoh untuk AC rusak:
+{
+  "problem": "AC Tidak Dingin",
+  "urgency": "medium",
+  "recommended_service": "Teknisi AC",
+  "price_estimation": "Rp 150.000 - Rp 500.000",
+  "description": "Kemungkinan penyebabnya adalah kebocoran freon, kompresor lemah, atau filter kotor. Perlu dibersihkan dan dicek tekanan freon."
+}
+
+Berikan diagnosis yang spesifik dan berguna!
 `;
 
     try {
         let result;
         if (input.imageBase64) {
+            // Vision API call with image
             result = await model.generateContent([
                 prompt,
                 {
@@ -87,27 +109,33 @@ Only return the JSON, no other text.
                 },
             ]);
         } else {
+            // Text-only call
             result = await model.generateContent(prompt);
         }
 
         const response = await result.response;
         const text = response.text();
 
+        console.log('Gemini response:', text); // Debug log
+
         // Extract JSON from response
         const jsonMatch = text.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
-            return JSON.parse(jsonMatch[0]);
+            const parsed = JSON.parse(jsonMatch[0]);
+            return parsed;
         }
 
-        throw new Error('Failed to analyze problem');
+        throw new Error('Failed to parse JSON from AI response');
     } catch (error) {
         console.error('Error analyzing problem:', error);
+
+        // Return more helpful error response
         return {
-            problem: 'unknown',
+            problem: 'Gagal Menganalisis',
             urgency: 'medium',
-            recommended_service: 'general_service',
-            price_estimation: '100k - 500k',
-            description: 'Unable to analyze. Please provide more details.',
+            recommended_service: 'Layanan Umum',
+            price_estimation: 'Rp 100.000 - Rp 500.000',
+            description: `Maaf, ada kesalahan saat menganalisis. Error: ${error instanceof Error ? error.message : 'Unknown error'}. Silakan coba lagi atau tambahkan deskripsi text yang lebih detail.`,
         };
     }
 }
