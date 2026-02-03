@@ -56,9 +56,9 @@ export async function analyzeProblem(input: {
     text?: string;
     imageBase64?: string;
 }) {
-    // Use gemini-1.5-flash for both text and vision (replaces deprecated gemini-pro-vision)
+    // Use gemini-1.5-flash-latest for both text and vision
     const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-1.5-flash-latest',
     });
 
     let prompt = `
