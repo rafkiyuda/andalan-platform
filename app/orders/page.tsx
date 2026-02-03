@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { OrderCard } from '@/components/order-card';
+import { CreateOrderDialog } from '@/components/create-order-dialog';
 import { Button } from '@/components/ui/button';
-import { Package, Filter, Plus } from 'lucide-react';
+import { Package, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Order {
@@ -86,10 +87,7 @@ export default function OrdersPage() {
                             <h1 className="text-3xl md:text-4xl font-bold font-heading mb-2">Pesanan Saya</h1>
                             <p className="text-muted-foreground">Kelola dan pantau semua pesanan Anda</p>
                         </div>
-                        <Button className="rounded-xl bg-gradient-primary text-white hover:opacity-90 transition-opacity">
-                            <Plus className="h-4 w-4 mr-2" />
-                            Buat Pesanan Baru
-                        </Button>
+                        <CreateOrderDialog onOrderCreated={fetchOrders} />
                     </div>
                 </div>
             </div>
@@ -134,10 +132,7 @@ export default function OrdersPage() {
                                 ? 'Anda belum memiliki pesanan. Mulai cari layanan yang Anda butuhkan!'
                                 : `Tidak ada pesanan dengan status "${statusFilters.find(f => f.value === selectedStatus)?.label}"`}
                         </p>
-                        <Button className="rounded-xl bg-gradient-primary text-white hover:opacity-90">
-                            <Plus className="h-4 w-4 mr-2" />
-                            Buat Pesanan Pertama
-                        </Button>
+                        <CreateOrderDialog onOrderCreated={fetchOrders} />
                     </div>
                 ) : (
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
