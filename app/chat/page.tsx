@@ -115,22 +115,22 @@ function ChatContent() {
     };
 
     return (
-        <div className="flex flex-col h-[calc(100vh-64px)] md:h-[calc(100vh-64px)] max-w-4xl mx-auto">
+        <div className="flex flex-col h-[calc(100vh-64px)] max-w-4xl mx-auto">
             {/* Messages Area - scrollable */}
-            <div className="flex-1 overflow-y-auto md:p-6 p-4 pb-32 md:pb-24 scrollbar-hide">
+            <div className="flex-1 overflow-y-auto md:p-6 p-4 pb-24 md:pb-24 scrollbar-hide">
                 {messages.length === 0 && (
-                    <div className="flex flex-col items-center justify-center text-center space-y-4 md:space-y-6 pt-8 md:pt-16">
+                    <div className="flex flex-col items-center justify-start text-center space-y-3 md:space-y-6 pt-4 md:pt-16">
                         <div className="relative">
                             <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
-                            <div className="relative bg-background p-3 md:p-4 rounded-2xl border shadow-lg">
-                                <Sparkles className="h-8 w-8 md:h-10 md:w-10 text-primary" />
+                            <div className="relative bg-background p-2 md:p-4 rounded-2xl border shadow-lg">
+                                <Sparkles className="h-6 w-6 md:h-10 md:w-10 text-primary" />
                             </div>
                         </div>
-                        <div className="space-y-2 max-w-md px-4">
-                            <h2 className="text-xl md:text-2xl font-bold tracking-tight">
+                        <div className="space-y-1 md:space-y-2 max-w-md px-4">
+                            <h2 className="text-lg md:text-2xl font-bold tracking-tight">
                                 Ada masalah apa hari ini?
                             </h2>
-                            <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                            <p className="text-xs md:text-base text-muted-foreground leading-relaxed">
                                 Ceritakan kebutuhan Anda, dan Andalan AI akan mencarikan profesional
                                 terbaik untuk menyelesaikannya.
                             </p>
@@ -138,13 +138,13 @@ function ChatContent() {
                         <div className="grid grid-cols-1 gap-2 text-sm text-left w-full max-w-md px-4">
                             <button
                                 onClick={() => setInput("Pipa air di dapur bocor")}
-                                className="p-3 bg-muted/50 hover:bg-muted rounded-xl border transition-colors text-left"
+                                className="p-2.5 md:p-3 bg-muted/50 hover:bg-muted rounded-xl border transition-colors text-left text-xs md:text-sm"
                             >
                                 &quot;Pipa air di dapur bocor&quot;
                             </button>
                             <button
                                 onClick={() => setInput("Butuh guru les matematika SD")}
-                                className="p-3 bg-muted/50 hover:bg-muted rounded-xl border transition-colors text-left"
+                                className="p-2.5 md:p-3 bg-muted/50 hover:bg-muted rounded-xl border transition-colors text-left text-xs md:text-sm"
                             >
                                 &quot;Butuh guru les matematika SD&quot;
                             </button>
@@ -230,15 +230,15 @@ function ChatContent() {
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Area - Fixed at bottom */}
-            <div className="fixed bottom-16 md:bottom-4 left-0 right-0 md:sticky md:bottom-4 px-4 md:px-6 pb-2 md:pb-0">
-                <div className="max-w-3xl mx-auto bg-background/95 md:bg-background/80 backdrop-blur-lg border rounded-2xl p-2 shadow-lg ring-1 ring-black/5 dark:ring-white/10">
+            {/* Input Area - Sticky at bottom with no gap */}
+            <div className="sticky bottom-0 left-0 right-0 bg-background border-t md:border-t-0 md:bottom-4 md:px-6 px-4 py-3 md:py-0">
+                <div className="max-w-3xl mx-auto md:bg-background/80 md:backdrop-blur-lg md:border md:rounded-2xl md:p-2 md:shadow-lg md:ring-1 md:ring-black/5 dark:md:ring-white/10">
                     <form
                         onSubmit={handleSubmit}
                         className="flex items-center gap-2 relative"
                     >
                         <Input
-                            className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-4 py-4 md:py-6 text-base shadow-none"
+                            className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-3 md:px-4 py-3 md:py-6 text-sm md:text-base shadow-none"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Ketik pesan Anda disini..."
@@ -248,7 +248,7 @@ function ChatContent() {
                             type="submit"
                             size="icon"
                             disabled={!input?.trim() || isLoading}
-                            className="h-10 w-10 rounded-xl shrink-0 mr-1"
+                            className="h-9 w-9 md:h-10 md:w-10 rounded-xl shrink-0"
                         >
                             <Send className="h-4 w-4" />
                         </Button>

@@ -64,7 +64,7 @@ export function InstantChatMode() {
     return (
         <div className="flex flex-col h-[calc(100vh-280px)] md:h-auto max-w-4xl mx-auto">
             {/* Messages Area - Scrollable */}
-            <div className="flex-1 overflow-y-auto pb-28 md:pb-4 space-y-4">
+            <div className="flex-1 overflow-y-auto pb-20 md:pb-4 space-y-4">
                 {/* Welcome Message */}
                 {messages.length === 0 && (
                     <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
@@ -78,7 +78,7 @@ export function InstantChatMode() {
                                     <p className="text-xs md:text-sm text-muted-foreground mb-3">
                                         Ceritakan masalah atau kebutuhan jasa Anda, dan saya akan membantu menemukan solusi terbaik.
                                     </p>
-                                    <div className="text-xs text-muted-foreground space-y-1">
+                                    <div className="text-[10px] md:text-xs text-muted-foreground space-y-0.5 md:space-y-1">
                                         <p>💡 <strong>Tips:</strong> Jelaskan masalahnya dengan detail</p>
                                         <p>📷 Punya foto? Switch ke mode "Foto" untuk diagnosis visual</p>
                                     </div>
@@ -118,34 +118,34 @@ export function InstantChatMode() {
                 )}
             </div>
 
-            {/* Input Area - Fixed at bottom on mobile */}
-            <div className="fixed bottom-16 md:bottom-auto md:static left-0 right-0 px-4 md:px-0 pb-2 md:pb-0">
-                <Card className="shadow-lg md:shadow-none">
-                    <CardContent className="p-3 md:p-4">
+            {/* Input Area - Sticky at bottom with no gap */}
+            <div className="sticky bottom-0 left-0 right-0 bg-background border-t md:border-t-0 md:bottom-auto md:static px-4 md:px-0 py-2 md:py-0">
+                <Card className="md:shadow-lg border-0 md:border">
+                    <CardContent className="p-2 md:p-4">
                         <div className="flex gap-2 md:gap-3">
                             <Textarea
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={handleKeyPress}
                                 placeholder="Ketik pertanyaan atau masalah Anda di sini..."
-                                className="min-h-[50px] md:min-h-[60px] resize-none rounded-xl text-sm md:text-base"
+                                className="min-h-[44px] md:min-h-[60px] resize-none rounded-xl text-xs md:text-base"
                                 disabled={loading}
-                                rows={2}
+                                rows={1}
                             />
                             <Button
                                 onClick={handleSend}
                                 disabled={!input.trim() || loading}
-                                className="rounded-xl bg-gradient-primary text-white self-end h-[50px] md:h-auto"
+                                className="rounded-xl bg-gradient-primary text-white self-end h-[44px] md:h-auto"
                                 size="icon"
                             >
                                 {loading ? (
-                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                    <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin" />
                                 ) : (
-                                    <Send className="h-5 w-5" />
+                                    <Send className="h-4 w-4 md:h-5 md:w-5" />
                                 )}
                             </Button>
                         </div>
-                        <p className="text-[10px] md:text-xs text-muted-foreground mt-2">
+                        <p className="text-[9px] md:text-xs text-muted-foreground mt-1 md:mt-2 hidden md:block">
                             Tekan Enter untuk kirim, Shift+Enter untuk baris baru
                         </p>
                     </CardContent>
