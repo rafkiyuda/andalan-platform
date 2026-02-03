@@ -88,8 +88,6 @@ export function Navbar() {
                 </div>
             </nav>
 
-            {/* Mobile Bottom Spacer */}
-            <div className="h-16 md:hidden" />
         </>
     );
 }
