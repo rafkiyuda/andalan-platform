@@ -4,9 +4,10 @@ import { prisma } from '@/lib/prisma';
 // GET /api/orders/[id] - Fetch single order
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
+        const params = await context.params;
         const order = await prisma.order.findUnique({
             where: { id: params.id },
             include: {
@@ -38,9 +39,10 @@ export async function GET(
 // PATCH /api/orders/[id] - Update order status
 export async function PATCH(
     request: Request,
-    { params }: { params: { id: string } }
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
+        const params = await context.params;
         const body = await request.json();
         const { status } = body;
 
@@ -79,9 +81,10 @@ export async function PATCH(
 // DELETE /api/orders/[id] - Cancel order
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
+        const params = await context.params;
         await prisma.order.update({
             where: { id: params.id },
             data: { status: 'cancelled' },
