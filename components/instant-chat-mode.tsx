@@ -128,7 +128,7 @@ export function InstantChatMode() {
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={handleKeyPress}
                                 placeholder="Ketik pertanyaan atau masalah Anda di sini..."
-                                className="min-h-[44px] md:min-h-[60px] resize-none rounded-xl text-xs md:text-base"
+                                className="min-h-[44px] md:min-h-[60px] resize-none rounded-xl text-xs md:text-base bg-muted/30 border border-input"
                                 disabled={loading}
                                 rows={1}
                             />
