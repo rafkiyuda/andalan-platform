@@ -46,7 +46,7 @@ export default function SearchPage({
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {services.map((item) => (
-                    <Link key={item.id} href={`/profile/${item.worker_id}`}>
+                    <Link key={item.id} href={`/provider/${item.worker_id}`}>
                         <Card className="hover:shadow-lg transition-all h-full flex flex-col group cursor-pointer overflow-hidden border-primary/10">
                             <div className="aspect-video bg-muted relative overflow-hidden">
                                 {/* Placeholder Image */}
