@@ -56,9 +56,9 @@ export async function analyzeProblem(input: {
     text?: string;
     imageBase64?: string;
 }) {
-    // Use gemini-1.5-flash-latest for both text and vision
+    // Use gemini-2.5-flash (same model as chat API - confirmed working)
     const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash-latest',
+        model: 'gemini-2.5-flash',
     });
 
     let prompt = `
