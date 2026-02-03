@@ -16,7 +16,7 @@ model User {
   email         String?  @unique
   phone         String?  @unique
   passwordHash  String
-  userType      String   @default("customer") // customer, mitra
+  userType      String   // "customer" | "mitra"
   
   // Profile
   avatar        String?
@@ -28,10 +28,10 @@ model User {
   emailVerified Boolean  @default(false)
   
   // Mitra-specific fields
-  rating        Float?
+  rating        Float    @default(0)
   totalJobs     Int      @default(0)
   isOnline      Boolean  @default(false)
-  services      String[] // Array of service IDs they offer
+  services      String[] // Array of service categories
   
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -51,7 +51,7 @@ model Order {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   serviceType String
   serviceName String
-  description String
+  description String?
   status      String   @default("pending") // pending, confirmed, in-progress, completed, cancelled
   price       Float
   location    String?
@@ -72,13 +72,14 @@ model Order {
 }
 
 model Service {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
   category    String
-  description String
+  description String?
   basePrice   Float
   icon        String?
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([category])
 }
@@ -93,4 +94,35 @@ model Session {
   
   @@index([userId])
   @@index([token])
+}
+
+// Mitra/Worker Database for AI Recommendations
+model Worker {
+  id              String   @id @default(cuid())
+  name            String
+  phone           String   @unique
+  email           String?  @unique
+  avatar          String?
+  bio             String?
+  location        String
+  skills          String[] // Array of skills for matching
+  category        String   // "formal" | "informal"
+  specialization  String   // Main expertise
+  experience      Int      // Years of experience
+  rating          Float    @default(0)
+  totalJobs       Int      @default(0)
+  isAvailable     Boolean  @default(true)
+  isVerified      Boolean  @default(false)
+  pricePerHour    Float?
+  priceRange      String?  // e.g., "50000-150000"
+  workingHours    String?  // e.g., "08:00-17:00"
+  description     String?  // Detailed description for AI matching
+  certifications  String[] // Professional certifications
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([location])
+  @@index([category])
+  @@index([isAvailable])
+  @@index([rating])
 }
