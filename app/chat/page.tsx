@@ -1,30 +1,32 @@
 "use client";
 
-import { useChat } from "ai/react";
+import { useState, useEffect, useRef, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send, Bot, User, Sparkles } from "lucide-react";
-import { useEffect, useRef, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
+interface Message {
+    id: string;
+    role: 'user' | 'assistant';
+    content: string;
+}
+
 function ChatContent() {
-    const { messages, input, setInput, append, isLoading, error } = useChat({
-        onError: (error) => {
-            console.error('Chat error:', error);
-            alert('Gagal mengirim pesan: ' + error.message);
-        },
-    });
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [input, setInput] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const searchParams = useSearchParams();
 
-    // Auto-fill input from URL query if present (from Home search)
+    // Auto-fill input from URL query if present
     useEffect(() => {
         const q = searchParams.get("q");
         if (q && input === "" && messages.length === 0) {
             setInput(q);
         }
-    }, [searchParams, input, messages.length, setInput]);
+    }, [searchParams, input, messages.length]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -34,20 +36,67 @@ function ChatContent() {
         scrollToBottom();
     }, [messages, isLoading]);
 
-    const renderMessageContent = (m: any) => {
-        return m.content || "";
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
 
-        console.log('Sending message:', input);
-        await append({
+        const userMessage: Message = {
+            id: Date.now().toString(),
             role: 'user',
             content: input,
-        });
+        };
+
+        setMessages(prev => [...prev, userMessage]);
         setInput('');
+        setIsLoading(true);
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: [...messages, userMessage],
+                }),
+            });
+
+            if (!response.ok) throw new Error('Failed to send message');
+
+            const reader = response.body?.getReader();
+            const decoder = new TextDecoder();
+            let assistantMessage = '';
+
+            const assistantId = (Date.now() + 1).toString();
+            setMessages(prev => [...prev, {
+                id: assistantId,
+                role: 'assistant',
+                content: '',
+            }]);
+
+            while (reader) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('0:')) {
+                        const text = line.substring(2).replace(/^"|"$/g, '');
+                        assistantMessage += text;
+                        setMessages(prev => prev.map(msg =>
+                            msg.id === assistantId
+                                ? { ...msg, content: assistantMessage }
+                                : msg
+                        ));
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Chat error:', error);
+            alert('Gagal mengirim pesan. Silakan coba lagi.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -124,7 +173,7 @@ function ChatContent() {
                                 )}
                             >
                                 <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                                    {renderMessageContent(m)}
+                                    {m.content}
                                 </div>
                             </div>
                         </div>
