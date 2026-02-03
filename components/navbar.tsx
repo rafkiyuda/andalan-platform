@@ -13,7 +13,7 @@ export function Navbar() {
     const navItems = [
         { label: 'Home', href: '/', icon: Home },
         { label: 'Cari', href: '/search', icon: Search },
-        { label: 'Instant', href: '/chat', icon: Zap },
+        { label: 'Instant', href: '/instant', icon: Zap },
         { label: 'Pesanan', href: '/orders', icon: Briefcase },
         { label: 'Profil', href: '/profile', icon: User },
     ];
