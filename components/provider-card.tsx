@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Star, MapPin, Briefcase, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 interface ProviderCardProps {
     provider: {
@@ -27,8 +28,17 @@ export function ProviderCard({
     showDistance,
     distance,
 }: ProviderCardProps) {
+    const router = useRouter();
+
+    const handleCardClick = () => {
+        router.push(`/provider/${provider.id}`);
+    };
+
     return (
-        <Card className="card-hover overflow-hidden">
+        <Card
+            className="card-hover overflow-hidden cursor-pointer"
+            onClick={handleCardClick}
+        >
             <CardContent className="p-6">
                 <div className="flex items-start gap-4">
                     {/* Avatar */}
