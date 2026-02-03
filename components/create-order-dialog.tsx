@@ -247,13 +247,7 @@ export function CreateOrderDialog({ onOrderCreated }: CreateOrderDialogProps) {
                         </Button>
                         <Button
                             type="submit"
-                            disabled={
-                                loading ||
-                                !formData.serviceType ||
-                                !formData.serviceName ||
-                                !formData.description ||
-                                !formData.price
-                            }
+                            disabled={loading}
                         >
                             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             Buat Pesanan
