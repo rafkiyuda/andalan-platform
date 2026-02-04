@@ -114,15 +114,15 @@ export function WorkerRecommendationCard({
                                         Lihat Profile
                                     </Button>
                                 </Link>
-                                <Button
-                                    size="sm"
-                                    asChild
-                                >
-                                    <Link href={`/book/${id}`}>
+                                <Link href={`/provider/${id}`} className="flex-1">
+                                    <Button
+                                        size="sm"
+                                        className="w-full"
+                                    >
                                         <Phone className="w-3.5 h-3.5 mr-1" />
                                         Hubungi
-                                    </Link>
-                                </Button>
+                                    </Button>
+                                </Link>
                             </div>
                         </div>
                     </div>
