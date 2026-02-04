@@ -100,20 +100,20 @@ export function WorkerRecommendationCard({
                         </div>
 
                         {/* Price & Actions */}
-                        <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center justify-between gap-2 mt-4">
                             <div className="text-sm font-semibold text-primary">
                                 {displayPrice}
                             </div>
                             <div className="flex gap-2">
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    asChild
-                                >
-                                    <Link href={`/worker/${id}`}>
+                                <Link href={`/provider/${id}`} className="flex-1">
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="w-full"
+                                    >
                                         Lihat Profile
-                                    </Link>
-                                </Button>
+                                    </Button>
+                                </Link>
                                 <Button
                                     size="sm"
                                     asChild
