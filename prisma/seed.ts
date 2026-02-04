@@ -14,6 +14,8 @@ async function main() {
             name: 'Demo User',
             email: 'demo@andalan.com',
             phone: '+62812345678',
+            passwordHash: 'demo_hash_not_used',
+            userType: 'CUSTOMER',
         },
     });
 
