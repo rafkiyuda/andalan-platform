@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Star, ShieldCheck, MapPin } from "lucide-react";
 import { MOCK_SERVICES, MOCK_PROFILES } from "@/lib/mock-data";
 
-export default function SearchPage({
+export default async function SearchPage({
     searchParams,
 }: {
-    searchParams: { [key: string]: string | string[] | undefined };
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-    const category = typeof searchParams.category === 'string' ? searchParams.category : undefined;
-    const query = typeof searchParams.q === 'string' ? searchParams.q.toLowerCase() : undefined;
+    const params = await searchParams;
+    const category = typeof params.category === 'string' ? params.category : undefined;
+    const query = typeof params.q === 'string' ? params.q.toLowerCase() : undefined;
 
     // Filter Logic
     const services = MOCK_SERVICES.filter(service => {

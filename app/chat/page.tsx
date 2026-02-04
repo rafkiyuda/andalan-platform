@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Bot, User, Sparkles } from "lucide-react";
+import { Send, Bot, User, Sparkles, Camera, ImagePlus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -15,6 +15,7 @@ interface Message {
     role: 'user' | 'assistant';
     content: string;
     workerIds?: string[];
+    image?: string;
 }
 
 interface Worker {
@@ -36,7 +37,9 @@ function ChatContent() {
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [workers, setWorkers] = useState<Record<string, Worker>>({});
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const searchParams = useSearchParams();
 
     // Auto-fill input from URL query if present
@@ -55,18 +58,31 @@ function ChatContent() {
         scrollToBottom();
     }, [messages, isLoading]);
 
+    const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedImage(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!input.trim() || isLoading) return;
+        if ((!input.trim() && !selectedImage) || isLoading) return;
 
         const userMessage: Message = {
             id: Date.now().toString(),
             role: 'user',
-            content: input,
+            content: input || "[Gambar dikirim]",
+            image: selectedImage || undefined,
         };
 
         setMessages(prev => [...prev, userMessage]);
         setInput('');
+        setSelectedImage(null);
         setIsLoading(true);
 
         try {
@@ -190,7 +206,16 @@ function ChatContent() {
                             >
                                 <div className="text-sm leading-relaxed prose prose-sm dark:prose-invert max-w-none">
                                     {m.role === "user" ? (
-                                        <div className="whitespace-pre-wrap">{m.content}</div>
+                                        <div className="space-y-2">
+                                            {m.image && (
+                                                <img
+                                                    src={m.image}
+                                                    alt="Uploaded"
+                                                    className="rounded-lg max-w-full h-auto max-h-64 object-cover"
+                                                />
+                                            )}
+                                            <div className="whitespace-pre-wrap">{m.content}</div>
+                                        </div>
                                     ) : (
                                         <ReactMarkdown
                                             remarkPlugins={[remarkGfm]}
@@ -235,23 +260,84 @@ function ChatContent() {
                 <div className="max-w-3xl mx-auto md:bg-background/80 md:backdrop-blur-lg md:border md:rounded-2xl md:p-2 md:shadow-lg md:ring-1 md:ring-black/5 dark:md:ring-white/10">
                     <form
                         onSubmit={handleSubmit}
-                        className="flex items-center gap-2 relative"
+                        className="flex flex-col gap-2 relative"
                     >
-                        <Input
-                            className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-3 md:px-4 py-3 md:py-6 text-sm md:text-base shadow-none"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            placeholder="Ketik pesan Anda disini..."
-                            disabled={isLoading}
-                        />
-                        <Button
-                            type="submit"
-                            size="icon"
-                            disabled={!input?.trim() || isLoading}
-                            className="h-9 w-9 md:h-10 md:w-10 rounded-xl shrink-0"
-                        >
-                            <Send className="h-4 w-4" />
-                        </Button>
+                        {/* Image Preview */}
+                        {selectedImage && (
+                            <div className="relative inline-block">
+                                <img
+                                    src={selectedImage}
+                                    alt="Preview"
+                                    className="rounded-lg max-h-32 object-cover"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setSelectedImage(null)}
+                                    className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"
+                                >
+                                    <X className="h-3 w-3" />
+                                </button>
+                            </div>
+                        )}
+
+                        <div className="flex items-center gap-2">
+                            {/* Hidden file input */}
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageSelect}
+                                className="hidden"
+                            />
+
+                            {/* Camera button (mobile) */}
+                            <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => {
+                                    if (fileInputRef.current) {
+                                        fileInputRef.current.setAttribute('capture', 'environment');
+                                        fileInputRef.current.click();
+                                    }
+                                }}
+                                className="h-9 w-9 md:h-10 md:w-10 rounded-xl shrink-0"
+                            >
+                                <Camera className="h-4 w-4" />
+                            </Button>
+
+                            {/* Image upload button */}
+                            <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => {
+                                    if (fileInputRef.current) {
+                                        fileInputRef.current.removeAttribute('capture');
+                                        fileInputRef.current.click();
+                                    }
+                                }}
+                                className="h-9 w-9 md:h-10 md:w-10 rounded-xl shrink-0"
+                            >
+                                <ImagePlus className="h-4 w-4" />
+                            </Button>
+
+                            <Input
+                                className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-3 md:px-4 py-3 md:py-6 text-sm md:text-base shadow-none"
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                placeholder="Ketik pesan Anda disini..."
+                                disabled={isLoading}
+                            />
+                            <Button
+                                type="submit"
+                                size="icon"
+                                disabled={(!input?.trim() && !selectedImage) || isLoading}
+                                className="h-9 w-9 md:h-10 md:w-10 rounded-xl shrink-0"
+                            >
+                                <Send className="h-4 w-4" />
+                            </Button>
+                        </div>
                     </form>
                 </div>
             </div>
