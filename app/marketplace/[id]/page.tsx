@@ -44,6 +44,8 @@ export default function JobDetailPage() {
     const [estimatedDays, setEstimatedDays] = useState('');
     const [message, setMessage] = useState('');
     const [showApplicationForm, setShowApplicationForm] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [applicationSubmitted, setApplicationSubmitted] = useState(false);
 
     if (!job) {
         return (
@@ -72,13 +74,48 @@ export default function JobDetailPage() {
         locale: localeId,
     });
 
-    const handleSubmitApplication = () => {
-        // TODO: Implement API call
-        alert('Application submitted! (Mock - not yet connected to backend)');
-        setShowApplicationForm(false);
-        setProposedPrice('');
-        setEstimatedDays('');
-        setMessage('');
+    const handleSubmitApplication = async () => {
+        setIsSubmitting(true);
+
+        try {
+            const response = await fetch('/api/marketplace/applications', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    jobPostId: jobId,
+                    proposedPrice,
+                    estimatedDays,
+                    message,
+                    providerId: 'demo_provider_123',
+                    providerName: 'Demo Provider',
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Success!
+                setApplicationSubmitted(true);
+                setShowApplicationForm(false);
+                setProposedPrice('');
+                setEstimatedDays('');
+                setMessage('');
+
+                // Show success message
+                setTimeout(() => {
+                    alert('✅ Penawaran berhasil dikirim!\n\nPemberi kerja akan meninjau aplikasi Anda segera.');
+                }, 100);
+            } else {
+                throw new Error(data.error || 'Submission failed');
+            }
+        } catch (error) {
+            console.error('Error submitting application:', error);
+            alert('❌ Gagal mengirim penawaran. Silakan coba lagi.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -177,7 +214,28 @@ export default function JobDetailPage() {
                         </Card>
 
                         {/* Application Form */}
-                        {!showApplicationForm ? (
+                        {applicationSubmitted ? (
+                            <Card className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
+                                <CardContent className="p-6 text-center space-y-3">
+                                    <div className="mx-auto w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                        <Send className="h-6 w-6 text-green-600 dark:text-green-400" />
+                                    </div>
+                                    <h3 className="font-bold text-lg text-green-900 dark:text-green-300">
+                                        Penawaran Terkirim!
+                                    </h3>
+                                    <p className="text-sm text-green-800 dark:text-green-200">
+                                        Pemberi kerja akan meninjau penawaran Anda dan menghubungi jika tertarik.
+                                    </p>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => router.push('/marketplace')}
+                                        className="rounded-xl mt-4"
+                                    >
+                                        Lihat Pekerjaan Lainnya
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        ) : !showApplicationForm ? (
                             <Button
                                 onClick={() => setShowApplicationForm(true)}
                                 className="w-full rounded-xl bg-gradient-primary text-white h-12"
@@ -201,6 +259,7 @@ export default function JobDetailPage() {
                                             value={proposedPrice}
                                             onChange={(e) => setProposedPrice(e.target.value)}
                                             className="rounded-xl"
+                                            disabled={isSubmitting}
                                         />
                                     </div>
 
@@ -214,6 +273,7 @@ export default function JobDetailPage() {
                                             value={estimatedDays}
                                             onChange={(e) => setEstimatedDays(e.target.value)}
                                             className="rounded-xl"
+                                            disabled={isSubmitting}
                                         />
                                     </div>
 
@@ -227,6 +287,7 @@ export default function JobDetailPage() {
                                             onChange={(e) => setMessage(e.target.value)}
                                             rows={5}
                                             className="rounded-xl"
+                                            disabled={isSubmitting}
                                         />
                                     </div>
 
@@ -235,15 +296,16 @@ export default function JobDetailPage() {
                                             variant="outline"
                                             onClick={() => setShowApplicationForm(false)}
                                             className="flex-1 rounded-xl"
+                                            disabled={isSubmitting}
                                         >
                                             Batal
                                         </Button>
                                         <Button
                                             onClick={handleSubmitApplication}
-                                            disabled={!proposedPrice || !estimatedDays || !message}
+                                            disabled={!proposedPrice || !estimatedDays || !message || isSubmitting}
                                             className="flex-1 rounded-xl bg-gradient-primary text-white"
                                         >
-                                            Kirim Penawaran
+                                            {isSubmitting ? 'Mengirim...' : 'Kirim Penawaran'}
                                         </Button>
                                     </div>
                                 </CardContent>
