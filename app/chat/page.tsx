@@ -115,9 +115,9 @@ function ChatContent() {
     };
 
     return (
-        <div className="flex flex-col h-[calc(100vh-64px)] max-w-4xl mx-auto">
+        <div className="flex flex-col h-[calc(100vh-64px)] md:h-[calc(100vh-64px)]">
             {/* Messages Area - scrollable */}
-            <div className="flex-1 overflow-y-auto md:p-6 p-4 pb-24 md:pb-24 scrollbar-hide">
+            <div className="flex-1 overflow-y-auto md:p-6 p-4 pb-32 md:pb-24 scrollbar-hide">
                 {messages.length === 0 && (
                     <div className="flex flex-col items-center justify-start text-center space-y-3 md:space-y-6 pt-4 md:pt-16">
                         <div className="relative">
@@ -230,8 +230,8 @@ function ChatContent() {
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Area - Sticky at bottom with no gap */}
-            <div className="sticky bottom-0 left-0 right-0 bg-background border-t md:border-t-0 md:bottom-4 md:px-6 px-4 py-3 md:py-0">
+            {/* Input Area - Fixed at bottom on mobile, above nav bar */}
+            <div className="fixed md:sticky bottom-16 md:bottom-4 left-0 right-0 bg-background border-t md:border-t-0 md:px-6 px-4 py-3 md:py-0 z-40">
                 <div className="max-w-3xl mx-auto md:bg-background/80 md:backdrop-blur-lg md:border md:rounded-2xl md:p-2 md:shadow-lg md:ring-1 md:ring-black/5 dark:md:ring-white/10">
                     <form
                         onSubmit={handleSubmit}
