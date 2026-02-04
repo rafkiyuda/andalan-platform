@@ -14,7 +14,7 @@ export function Navbar() {
         { label: 'Home', href: '/', icon: Home },
         { label: 'Cari', href: '/search', icon: Search },
         { label: 'Instant', href: '/instant', icon: Zap },
-        { label: 'Pesanan', href: '/orders', icon: Briefcase },
+        { label: 'Market', href: '/marketplace', icon: Briefcase },
         { label: 'Profil', href: '/profile', icon: User },
     ];
 

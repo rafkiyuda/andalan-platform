@@ -34,9 +34,9 @@ export default function SearchPage({
                     <p className="text-muted-foreground">{services.length} layanan ditemukan</p>
                 </div>
                 <div className="flex gap-2 overflow-x-auto pb-2">
-                    {['All', 'Formal', 'Informal'].map(filter => (
-                        <Link key={filter} href={filter === 'All' ? '/search' : `/search?category=${filter.toLowerCase()}`}>
-                            <Button variant={filter.toLowerCase() === (category || 'all') ? 'default' : 'outline'} size="sm" className="rounded-full">
+                    {['All', 'Tukang', 'IT', 'Rumah Tangga', 'Otomotif', 'Kecantikan'].map(filter => (
+                        <Link key={filter} href={filter === 'All' ? '/search' : `/search?category=${filter.toLowerCase().replace(' ', '_')}`}>
+                            <Button variant={filter.toLowerCase().replace(' ', '_') === (category || 'all') ? 'default' : 'outline'} size="sm" className="rounded-full whitespace-nowrap">
                                 {filter}
                             </Button>
                         </Link>

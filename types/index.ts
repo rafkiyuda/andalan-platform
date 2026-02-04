@@ -2,7 +2,7 @@ export type UserRole = 'user' | 'worker';
 
 export type VerificationStatus = 'unverified' | 'pending' | 'verified';
 
-export type ServiceCategory = 'formal' | 'informal';
+export type ServiceCategory = 'tukang' | 'it' | 'rumah_tangga' | 'otomotif' | 'kecantikan';
 
 export interface Profile {
     id: string;
