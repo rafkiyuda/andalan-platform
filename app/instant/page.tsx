@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ProviderCard } from '@/components/provider-card';
 import { CameraCapture } from '@/components/camera-capture';
 import { InstantChatMode } from '@/components/instant-chat-mode';
+import { SatuPaduMode } from '@/components/satu-padu-mode';
 import {
     Camera,
     Upload,
@@ -42,7 +43,7 @@ interface Provider {
 
 export default function InstantPage() {
     const router = useRouter();
-    const [mode, setMode] = useState<'chat' | 'foto'>('foto');
+    const [mode, setMode] = useState<'chat' | 'foto' | 'satu-padu'>('foto');
     const [step, setStep] = useState<'upload' | 'camera' | 'diagnosis' | 'providers'>('upload');
     const [image, setImage] = useState<string | null>(null);
     const [textInput, setTextInput] = useState('');
@@ -137,7 +138,11 @@ export default function InstantPage() {
                         ANDALAN Instant
                     </h1>
                     <p className="text-muted-foreground mt-1">
-                        {mode === 'chat' ? 'Chat dengan AI untuk solusi cepat' : 'Foto masalah, AI diagnosa, langsung cari mitra'}
+                        {mode === 'chat'
+                            ? 'Chat dengan AI untuk solusi cepat'
+                            : mode === 'satu-padu'
+                                ? 'Matching banyak pekerja untuk satu pekerjaan besar'
+                                : 'Foto masalah, AI diagnosa, langsung cari mitra'}
                     </p>
 
                     {/* Mode Toggle */}
@@ -158,6 +163,14 @@ export default function InstantPage() {
                             <Camera className="h-4 w-4" />
                             Foto Masalah
                         </Button>
+                        <Button
+                            onClick={() => setMode('satu-padu')}
+                            variant={mode === 'satu-padu' ? 'default' : 'outline'}
+                            className="rounded-xl flex items-center gap-2"
+                        >
+                            <Zap className="h-4 w-4" />
+                            Satu Padu
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -165,6 +178,9 @@ export default function InstantPage() {
             <div className="container mx-auto px-4 md:px-6 py-8">
                 {/* Chat Mode */}
                 {mode === 'chat' && <InstantChatMode />}
+
+                {/* Satu Padu Mode */}
+                {mode === 'satu-padu' && <SatuPaduMode />}
 
                 {/* Foto Mode */}
                 {mode === 'foto' && (

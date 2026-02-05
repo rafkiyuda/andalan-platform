@@ -50,10 +50,18 @@ export default async function SearchPage({
                     <Link key={item.id} href={`/provider/${item.worker_id}`}>
                         <Card className="hover:shadow-lg transition-all h-full flex flex-col group cursor-pointer overflow-hidden border-primary/10">
                             <div className="aspect-video bg-muted relative overflow-hidden">
-                                {/* Placeholder Image */}
-                                <div className="absolute inset-0 bg-secondary/10 flex items-center justify-center text-muted-foreground">
-                                    {item.subcategory} Image
-                                </div>
+                                {item.image_url ? (
+                                    /* eslint-disable-next-line @next/next/no-img-element */
+                                    <img
+                                        src={item.image_url}
+                                        alt={item.title}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    />
+                                ) : (
+                                    <div className="absolute inset-0 bg-secondary/10 flex items-center justify-center text-muted-foreground">
+                                        {item.subcategory}
+                                    </div>
+                                )}
                             </div>
                             <CardContent className="p-4 flex-1">
                                 <div className="flex justify-between items-start mb-2">

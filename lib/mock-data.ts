@@ -174,6 +174,7 @@ export const MOCK_SERVICES: Service[] = [
         subcategory: 'Tukang Ledeng',
         description: 'Perbaikan pipa bocor, instalasi air bersih, dan saluran tersumbat. Garansi 3 bulan.',
         price: 150000,
+        image_url: '/service-images/plumbing.png',
     },
     {
         id: 's2',
@@ -183,6 +184,7 @@ export const MOCK_SERVICES: Service[] = [
         subcategory: 'Tukang Listrik',
         description: 'Instalasi listrik rumah, panel listrik, MCB, dan stop kontak. Bergaransi.',
         price: 200000,
+        image_url: '/service-images/electrical.png',
     },
     {
         id: 's3',
@@ -192,6 +194,7 @@ export const MOCK_SERVICES: Service[] = [
         subcategory: 'Teknisi AC',
         description: 'Service AC, cuci AC, isi freon, dan pasang AC baru. Teknisi bersertifikat.',
         price: 100000,
+        image_url: 'https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=800&h=600&fit=crop',
     },
     {
         id: 's4',
@@ -201,6 +204,7 @@ export const MOCK_SERVICES: Service[] = [
         subcategory: 'Tukang Bangunan',
         description: 'Jasa renovasi rumah, pengecatan, dan pasang keramik. Harga nego.',
         price: 250000,
+        image_url: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&h=600&fit=crop',
     },
 
     // IT CATEGORY
@@ -212,6 +216,7 @@ export const MOCK_SERVICES: Service[] = [
         subcategory: 'Web Development',
         description: 'Jasa pembuatan website company profile, e-commerce, dan mobile app. SEO friendly.',
         price: 5000000,
+        image_url: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=600&fit=crop',
     },
     {
         id: 's6',
@@ -221,6 +226,7 @@ export const MOCK_SERVICES: Service[] = [
         subcategory: 'Design',
         description: 'Desain UI/UX aplikasi dan website, logo design, dan branding lengkap.',
         price: 3000000,
+        image_url: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=600&fit=crop',
     },
     {
         id: 's7',
@@ -230,6 +236,7 @@ export const MOCK_SERVICES: Service[] = [
         subcategory: 'Service Laptop',
         description: 'Service laptop lemot, install Windows, upgrade RAM/SSD, dan data recovery.',
         price: 150000,
+        image_url: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&h=600&fit=crop',
     },
 
     // RUMAH TANGGA CATEGORY
@@ -241,6 +248,7 @@ export const MOCK_SERVICES: Service[] = [
         subcategory: 'Cleaning Service',
         description: 'Jasa bersih-bersih rumah lengkap, termasuk kamar mandi dan dapur. Tim profesional.',
         price: 200000,
+        image_url: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop',
     },
 
     // OTOMOTIF CATEGORY
@@ -252,6 +260,7 @@ export const MOCK_SERVICES: Service[] = [
         subcategory: 'Service Motor',
         description: 'Service motor panggilan ke rumah. Ganti oli, tune up, dan perbaikan ringan.',
         price: 75000,
+        image_url: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=800&h=600&fit=crop',
     },
 
     // KECANTIKAN CATEGORY
@@ -263,5 +272,7 @@ export const MOCK_SERVICES: Service[] = [
         subcategory: 'Makeup Artist',
         description: 'Jasa makeup artist untuk wedding, prewedding, dan event. Berpengalaman dan profesional.',
         price: 1500000,
+        image_url: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&h=600&fit=crop',
     },
 ];
+
