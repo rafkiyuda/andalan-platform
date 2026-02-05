@@ -24,9 +24,12 @@ export function Navbar() {
             <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50 shadow-sm transition-all duration-300">
                 <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
                     <Link href="/" className="text-xl md:text-2xl font-bold font-heading text-primary tracking-tight flex items-center gap-2 hover:opacity-80 transition-opacity">
-                        <div className="h-8 w-8 rounded-xl bg-gradient-primary flex items-center justify-center text-white shadow-sm">
-                            <Zap className="h-4 w-4 fill-current" />
-                        </div>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src="/logo/andalan-logo.png"
+                            alt="ANDALAN Logo"
+                            className="h-10 w-auto object-contain"
+                        />
                         <span className="hidden sm:inline">ANDALAN</span>
                     </Link>
 
